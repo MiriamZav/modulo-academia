@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+	
+		<record model="product.category" id="category_student">
+			<field name="name">Factura colegiatura</field>
+		</record>
+		<record id="wizard_student_invoice" model="ir.ui.view">
+			<field name="name">make.student.invoice.form</field>
+			<field name="model">make.student.invoice</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Asistente para la generacion de facturas">
+					<header></header>
+					<sheet>
+						<separator string="Introduce el diario para la factura"/>
+						<field name="journal_id" required="True"/>
+					</sheet>
+					<footer>
+						<div align="center">
+							<button name="make_invoices" string="Generar" type="object"/>
+							<button special="cancel" string="Cerrar" type="object"/>
+						</div>
+					</footer>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="act_student_academia">
+			<field name="name">Registro de estudiantes</field>
+			<field name="res_model">academia.student</field>
+			<field name="view_mode">tree,form,pivot,graph</field>
+	    </record>
+
+	   <record model="ir.ui.view" id="pivot_student_tree">
+			<field name="name">academia.student.pivot</field>
+			<field name="model">academia.student</field>
+			<field name="type">pivot</field>
+			<field name="arch" type="xml">
+	    		<pivot string="Facturacion por escuela">
+	    			<field name="create_date" type="row"/>
+	    			<field name="partner_id" type="row"/>
+	    			<field name="amount_invoice" type="measure"/>
+	    		</pivot>
+	    	</field>
+	    </record>
+
+	    <record model="ir.ui.view" id="graph_student_tree">
+			<field name="name">academia.student.graph</field>
+			<field name="model">academia.student</field>
+			<field name="type">graph</field>
+			<field name="arch" type="xml">
+	    		<pivot string="Facturacion por escuela">
+	    			<field name="partner_id" type="row"/>
+	    			<field name="amount_invoice" type="measure"/>
+	    		</pivot>
+	    	</field>
+	    </record>
+
+
+	    <record model="ir.ui.view" id="tree_student_id">
+	    	<field name="name">academia.student.tree</field>
+	    	<field name="model">academia.student</field>
+	    	<field name="type">tree</field>
+	    	<field name="arch" type="xml">
+	    		<tree string="Listado de estudiantes">
+	    			<field name="name"/>
+	    			<field name="last_name"/>
+	    			<field name="create_date"/>
+
+	    		</tree>
+	    	</field>
+	    </record>
+
+	    <record model="ir.actions.act_window" id="act_config_materia">
+	    	<field name="name">Materias</field>
+	    	<field name="res_model">academia.materia</field>
+	    	<field name="view_mode">tree,form</field>
+	    </record>
+
+	    <record model="ir.actions.act_window" id="act_config_grado">
+	    	<field name="name">Grado</field>
+	    	<field name="res_model">academia.grado</field>
+	    	<field name="view_mode">tree,form</field>
+	    </record>
+
+		<record model="ir.ui.view" id="academia_grado">
+	    	<field name="name">academia.grado.form</field>
+	    	<field name="model">academia.grado</field>
+	    	<field name="type">form</field>
+	    	<field name="arch" type="xml">
+	    		<form string="Grado">
+	    			<header></header>
+	     			<sheet>
+	    				<group>
+	    					<field name="name"/>
+	    					<field name="group"/>
+	    				</group>
+	    					<notebook>
+	    						<page>
+	    							<field name="materia_ids">
+	    								<tree string="Materias" editable="bottom">
+	    									<field name="materia_id"/>
+	    								</tree>
+	    							</field>
+	    						</page>
+	    					</notebook>
+	    			</sheet>  			
+	    		</form>
+	    	</field>
+	    </record>
+	    <record model="ir.ui.view" id="tree_grado_id">
+	    	<field name="name">academia.grado.tree</field>
+	    	<field name="model">academia.grado</field>
+	    	<field name="arch" type="xml">
+	    		<tree string="Grados">
+	    			<field name="complete_name"/>
+	    		</tree>
+	    	</field>
+	    </record>
+
+	    <record model="ir.ui.view" id="academy_student_form">
+	    	<field name="name">academia.student.form</field>
+	    	<field name="model">academia.student</field>
+	    	<field name="type">form</field>
+	    	<field name="arch" type="xml">
+	    		<form string="Listado de estudiantes">
+	    			<header>
+	    				<button string="Generacion de facturas" name="generarFactura" type="object" class="oe_highlight"/>
+	    				<button string="Confirmar" name="confirm" type="object" states="draft"/>
+	    				<button string="Cancelar" name="cancel" type="object" states="draft"/>
+	    				<button string="Egresar" name="done" type="object" states="process"/>
+	    				<button string="Borrador" name="draft" type="object" states="cancel"/>
+
+	    				<field name="state" widget="statusbar"/>
+	    			</header>
+	    			<sheet>
+	    				<field  name="photo" widget="image" class="oe_avatar oe_left" options="{'preview_image': 'image_medium', 'size':[90, 90]}"/>
+	    				<group colspan="4">
+	    					<field name="name" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+	    					<field name="last_name"/>
+	    					<field name="curp" placeholder="ZADM981120MVZVLR07"/>
+	    					<field name="create_date"/>
+	    					<field name="active"/>
+	    					<field name="age"/>
+	    					<field name="partner_id" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+	    					<field name="country"/>
+	    					<field name="grado_id"/>
+
+	    				</group>
+	    				<group>
+	    					<notebook>
+	    						<page string="Calificaciones">
+	    							<field name="calificaciones_id">
+	    								<tree string="Calificaciones" editable="bottom">
+	    									<field name="name" required="True"></field>
+	    									<field name="calificacion" required="True"></field>
+	    								</tree>
+	    							</field>
+	    							<group class="oe_subtotal_footer oe_right" colspan="2" name="grupo_promedio">
+	    								<field name="promedio"/>
+	    							</group>
+	    						</page>
+	    						<page string="Facturas">
+	    							<field name="invoice_ids"/>
+	    						</page>
+	    						<page string="Comentarios">
+	    							<field name="note"/>
+	    						</page>
+	    					</notebook>
+	    				</group>
+	    			</sheet>
+	    			<div class="oe_chatter">
+	    				<field name="message_follower_ids" widget="mail_followers"/>
+	    				<field name="message_ids" widget="mail_thread"/>
+	    			</div>	    			
+	    		</form>
+	    	</field>
+	    </record>
+
+    <menuitem id="id_principal_academia" name="Academia Practica" sequence="10"/>
+    <menuitem id="id_menu_student" parent="id_principal_academia" name="Registros" sequence="0"/>
+    <menuitem id="id_menu_student_act" parent="id_menu_student" name="Estudiantes" action="act_student_academia" sequence="0"/>
+
+    <menuitem id="id_menu_config" parent="id_principal_academia" name="Configuracion" sequence="1"/>
+    <menuitem id="id_menu_config_act" parent="id_menu_config" name="Materias" action="act_config_materia" sequence="0"/>
+
+    <menuitem id="id_menu_grado_act" parent="id_menu_config" name="Grado" action="act_config_grado" sequence="0"/>
+
+
+</odoo>
